@@ -2,7 +2,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
-const path = require('path');
+require('dotenv').config()
+
 
 const app = express();
 const PORT = process.env.PORT || 8080; // Step 1
@@ -10,12 +11,15 @@ const PORT = process.env.PORT || 8080; // Step 1
 const routes = require('./routes/api');
 
 // Step 2
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/mern_youtube', {
+const uri = process.env.ATLAS_URI
+mongoose.connect(uri, {
     useNewUrlParser: true,
+    useCreateIndex: true, 
     useUnifiedTopology: true
 });
 
-mongoose.connection.on('connected', () => {
+const connection = mongoose.connection
+connection.on('connected', () => {
     console.log('Mongoose is connected!!!!');
 });
 
@@ -26,7 +30,7 @@ app.use(express.urlencoded({ extended: false }));
 // Step 3
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('client/build'));
+  app.use(express.static('client/build'));
 }
 
 
